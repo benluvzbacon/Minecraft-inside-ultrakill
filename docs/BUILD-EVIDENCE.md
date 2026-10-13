@@ -49,6 +49,6 @@ Supported SDK build output:
 - Floor calibration filters player, enemy and moving colliders; automatic block layer uses the real floor. An explicit collision-layer config is available. Player-ignored layers reject placement instead of silently creating pass-through blocks.
 - The preview shows rejection reasons and current block count. Preview materials are cached, not reallocated each frame.
 - Held secondary fire repeats placements at a configurable bounded rate, requires a fresh press after switches/menus/selection changes, and never emits catch-up bursts.
-- New pure tests cover six faces, slopes, offset origins, every axis/sign across five grid sizes, float-boundary tolerance and repeat safety. See the latest Actions run's policy-test notice for the assertion count.
+- New pure tests cover six faces, slopes, offset origins, every axis/sign across five grid sizes, float-boundary tolerance and repeat safety. **290 assertions passed** in [run 38382778913](https://github.com/benluvzbacon/Minecraft-inside-ultrakill/actions/runs/38382778913), commit 3099263. Clean-checkout SDK/NuGet compilation, archive inspection and artifact publication also passed. The PR check passed separately in run 38382784421.
 
 The Actions DLL is now the preferred artifact, built by the supported SDK pipeline. The historical sandbox output path above documents the first turn; ignored caches and generated files are not a persistent build environment.

@@ -10,7 +10,7 @@ These tests DO NOT instantiate Unity, run Harmony patches or exercise the game. 
 
 ## GitHub validation update
 
-The supported clean-checkout .NET SDK 8 build, public NuGet restore, policy tests, mod compilation, packaging/inspection and artifact upload all passed in [run 38382306911](https://github.com/benluvzbacon/Minecraft-inside-ultrakill/actions/runs/38382306911), commit 5442c8d. Building refinements add tests for outward surface snapping, all six neighboring faces, slope/float/scale boundaries, and safe held-placement repeats; subsequent runs validate these changes. The success annotation records the new policy assertion count. None of these tests execute Unity physics.
+The supported clean-checkout .NET SDK 8 build, public NuGet restore, policy tests, mod compilation, packaging/inspection and artifact upload all passed in [run 38382306911](https://github.com/benluvzbacon/Minecraft-inside-ultrakill/actions/runs/38382306911), commit 5442c8d. Building refinements add tests for outward surface snapping, all six neighboring faces, slope/float/scale boundaries, and safe held-placement repeats; subsequent runs validate these changes. The [building-refinement run 38382778913](https://github.com/benluvzbacon/Minecraft-inside-ultrakill/actions/runs/38382778913), commit 3099263, passed **290 policy assertions**, compilation, packaging/inspection and artifact publication. None of these tests execute Unity physics.
 
 ## Not executed — requires Windows Steam ULTRAKILL
 

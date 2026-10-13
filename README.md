@@ -18,6 +18,8 @@ An unofficial **C# BepInEx gameplay mod**, not a standalone game, texture pack o
 
 These descriptions are implemented code paths, **not successful in-game test results**. See [architecture](docs/ARCHITECTURE.md) for API provenance and [test checklist](docs/TESTING.md) for the release gate.
 
+For a hands-on installation and first-block walkthrough, see [Try building inside ULTRAKILL](docs/BUILDING.md).
+
 ## Install (Windows Steam, Mono build)
 
 1. Back up your mod setup. Use a clean mod profile first; do not overwrite any game executable.

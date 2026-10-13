@@ -8,7 +8,7 @@ release = root / 'release'; release.mkdir(exist_ok=True)
 archive = release / 'MinecraftUltrakill-0.1.0.zip'
 with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
     z.write(dll, 'BepInEx/plugins/MinecraftUltrakill/MinecraftUltrakill.dll')
-    for name in ['README.md', 'LICENSE', 'docs/TESTING.md', 'docs/ARCHITECTURE.md', 'docs/BUILD-EVIDENCE.md', 'docs/CONFIGURATION.md']:
+    for name in ['README.md', 'LICENSE', 'docs/TESTING.md', 'docs/ARCHITECTURE.md', 'docs/BUILD-EVIDENCE.md', 'docs/CONFIGURATION.md', 'docs/BUILDING.md']:
         z.write(root / name, 'BepInEx/plugins/MinecraftUltrakill/' + name)
     # Documentation/example only; do NOT overwrite a user's config on extraction.
     z.write(root / 'config/benluvzbacon.minecraft.ultrakill.cfg.example', 'BepInEx/plugins/MinecraftUltrakill/config.example')
