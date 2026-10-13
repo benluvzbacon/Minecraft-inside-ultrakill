@@ -1,0 +1,28 @@
+name: Build mod
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Test, restore, compile, package and inspect
+        run: bash scripts/build.sh
+      - name: Publish installable mod
+        uses: actions/upload-artifact@v4
+        with:
+          name: MinecraftUltrakill-0.1.0
+          path: |
+            release/MinecraftUltrakill-0.1.0.zip
+            release/MinecraftUltrakill-0.1.0.zip.sha256
+          if-no-files-found: error

@@ -1,0 +1,10 @@
+.cache/
+**/bin/
+**/obj/
+release/
+local-libs/
+*.user
+*.suo
+
+__pycache__/
+*.pyc

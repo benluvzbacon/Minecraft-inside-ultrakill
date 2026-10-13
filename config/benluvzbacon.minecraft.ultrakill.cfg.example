@@ -1,0 +1,34 @@
+## Documentation example; plugin generates its real config on first launch.
+[Controls]
+SwitchCharacter = F
+BlockPalette = E
+IgniteTNT = R
+ThirdPersonView = F5
+
+[Building]
+PlacementDistance = 6
+GridSize = 1
+MiningSpeed = 1
+MaxBlocks = 2048
+
+[Combat]
+SwordDamage = 2
+SwordCooldown = 0.45
+AxeDamage = 3.5
+AxeCooldown = 0.9
+AxeMiningSpeed = 4
+MeleeRange = 3
+
+[Character]
+SteveMovementSpeed = 0.45
+
+[Persistence]
+SaveBlocks = false
+
+[Diagnostics]
+DebugLogging = false
+
+[TNT]
+FuseSeconds = 3
+Radius = 4
+Damage = 6
