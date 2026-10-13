@@ -45,6 +45,13 @@ namespace MinecraftUltrakill.UI
             GUI.Label(new Rect(width * .5f - 5, height * .5f - 12, 30, 30), "+");
             if (plugin.Melee.FeedbackUntil > Time.time)
             { GUI.color = Color.red; GUI.Label(new Rect(width * .5f - 7, height * .5f - 12, 30, 30), "×"); GUI.color = Color.white; }
+            if (bar.Item == ItemKind.Block && plugin.World != null && !Palette)
+            {
+                GUI.color = plugin.World.PreviewValid ? new Color(.3f, 1f, .6f) : new Color(1f, .65f, .3f);
+                GUI.Label(new Rect(width * .5f - 230, height - 120, 520, 24), GridPlacement.Explain(plugin.World.Failure));
+                GUI.color = Color.white;
+                GUI.Label(new Rect(18, height - 58, 260, 24), "Blocks: " + plugin.World.Blocks.Count + "/" + plugin.Settings.MaxBlocks.Value + "  |  E: palette");
+            }
             if (plugin.Mining.Active)
             {
                 var r = new Rect(width * .5f - 90, height * .5f + 40, 180, 22); GUI.Box(r, "");

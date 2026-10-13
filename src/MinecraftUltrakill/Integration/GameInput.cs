@@ -49,12 +49,12 @@ namespace MinecraftUltrakill.Integration
             var source = GameBridge.Read(manager, "InputSource");
             return GameBridge.Read(source, name);
         }
-        public bool FireHeld(PlayerContext p)
+        public bool FireHeld(PlayerContext p, bool secondary = false)
         {
-            var action = Action(p, "Fire1");
+            var action = Action(p, secondary ? "Fire2" : "Fire1");
             if (action != null) return GameBridge.Flag(action, "IsPressed");
-            var button = Button(KeyCode.Mouse0);
-            return button != null ? GameBridge.Flag(button, "isPressed") : Input.GetMouseButton(0);
+            var button = Button(secondary ? KeyCode.Mouse1 : KeyCode.Mouse0);
+            return button != null ? GameBridge.Flag(button, "isPressed") : Input.GetMouseButton(secondary ? 1 : 0);
         }
         public bool FireDown(PlayerContext p, bool secondary = false)
         {

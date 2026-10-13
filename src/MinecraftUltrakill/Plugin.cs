@@ -36,6 +36,7 @@ namespace MinecraftUltrakill
         Harmony harmony;
         SteveHud hud;
         TntSystem tnt;
+        BuildingSystem building;
         WorldStore store;
         PlayerContext candidate;
         float nextFind, nextSave;
@@ -47,7 +48,7 @@ namespace MinecraftUltrakill
             {
                 Settings = new Settings(Config); InputKeys = new GameInput(); Bridge = new GameBridge(Logger);
                 Art = new ProceduralArt(); Mining = new MiningSystem(this); Melee = new MeleeSystem(this);
-                Characters = new CharacterManager(this); hud = new SteveHud(this, inventory); tnt = new TntSystem(this); store = new WorldStore(this);
+                Characters = new CharacterManager(this); hud = new SteveHud(this, inventory); tnt = new TntSystem(this); building = new BuildingSystem(this); store = new WorldStore(this);
                 harmony = new Harmony(Guid); AbilityPatches.Install(harmony, Bridge);
                 SceneManager.activeSceneChanged += ActiveSceneChanged; SceneManager.sceneUnloaded += SceneUnloaded;
                 ready = true; Logger.LogInfo("Minecraft x ULTRAKILL 0.1.0 initialized. F switches when the player is active. Runtime compatibility gate passed; this does not certify gameplay.");
@@ -74,17 +75,21 @@ namespace MinecraftUltrakill
                 {
                     if (Characters.Player.Playable)
                     {
+                        int previousSlot = inventory.Selected; BlockKind previousBlock = inventory.Block;
                         hud.InputTick();
+                        if (previousSlot != inventory.Selected || previousBlock != inventory.Block || hud.Palette) building.Reset();
                         if (!hud.Palette && InputKeys.Down(Settings.ViewKey.Value)) Characters.Model.ToggleView();
                         bool held = !hud.Palette && InputKeys.FireHeld(Characters.Player);
                         bool mining = Mining.Tick(Characters.Player, held, inventory.Item);
                         bool attack = !hud.Palette && !mining && InputKeys.FireDown(Characters.Player);
                         Melee.Tick(Characters.Player, inventory.Item, attack);
                         World.UpdatePreview(Characters.Player, inventory.Item == ItemKind.Block && !hud.Palette);
-                        if (!hud.Palette && inventory.Item == ItemKind.Block && InputKeys.FireDown(Characters.Player, true)) World.PlacePreview(Characters.Player, inventory.Block);
+                        if (!hud.Palette && inventory.Item == ItemKind.Block)
+                            building.Tick(Characters.Player, inventory.Block, InputKeys.FireDown(Characters.Player, true), InputKeys.FireHeld(Characters.Player, true));
+                        else building.Reset();
                         if (!hud.Palette && InputKeys.Down(Settings.IgniteKey.Value)) tnt.IgniteAimed(Characters.Player);
                     }
-                    else { Mining.Reset(); Melee.Reset(); World.ClearPreview(); }
+                    else { Mining.Reset(); Melee.Reset(); building.Reset(); World.ClearPreview(); }
                     Characters.Tick(inventory.Item, inventory.Block, Mining.Active);
                 }
                 else if (World != null) World.ClearPreview();
@@ -113,7 +118,7 @@ namespace MinecraftUltrakill
             if (World != null) { World.Dispose(); World = null; }
         }
         public void ResetInteraction()
-        { if (Mining != null) Mining.Reset(); if (Melee != null) Melee.Reset(); if (hud != null) hud.Reset(); }
+        { if (Mining != null) Mining.Reset(); if (Melee != null) Melee.Reset(); if (hud != null) hud.Reset(); if (building != null) building.Reset(); }
         public void Notice(string text) { NoticeText = text; NoticeUntil = Time.unscaledTime + 4; }
         public void LoggerInfo(string text) { Logger.LogInfo(text); }
         public void DebugLog(string text) { if (Settings.Debug.Value) Logger.LogInfo(text); }

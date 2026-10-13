@@ -10,6 +10,9 @@ PlacementDistance = 6
 GridSize = 1
 MiningSpeed = 1
 MaxBlocks = 2048
+BlockCollisionLayer = -1
+HoldToPlace = true
+PlacementInterval = 0.2
 
 [Combat]
 SwordDamage = 2

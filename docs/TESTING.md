@@ -8,6 +8,10 @@
 
 These tests DO NOT instantiate Unity, run Harmony patches or exercise the game. No fabricated Unity/game stubs are used to pretend gameplay was tested.
 
+## GitHub validation update
+
+The supported clean-checkout .NET SDK 8 build, public NuGet restore, policy tests, mod compilation, packaging/inspection and artifact upload all passed in [run 38382306911](https://github.com/benluvzbacon/Minecraft-inside-ultrakill/actions/runs/38382306911), commit 5442c8d. Building refinements add tests for outward surface snapping, all six neighboring faces, slope/float/scale boundaries, and safe held-placement repeats; subsequent runs validate these changes. The success annotation records the new policy assertion count. None of these tests execute Unity physics.
+
 ## Not executed — requires Windows Steam ULTRAKILL
 
 Record Steam build ID, Unity version, BepInEx/Harmony version, other mods and test level for each result. Start on a clean mod profile and keep LogOutput.log.
@@ -20,7 +24,7 @@ Record Steam build ID, Unity version, BepInEx/Harmony version, other mods and te
 | Transition/death/restart | V1 restored; no orphan models/camera offsets; new player binds; level blocks cleaned | NOT RUN |
 | Walk/jump/ramp/stairs | Ground checks, triggers, gravity and landing work; Steve speed reasonable; dash/slide/slam/walljump blocked only for Steve | NOT RUN |
 | First-/third-person | Steve proportions and limbs correct; viewmodel not clipped; shoulder camera avoids walls; camera restores on exit/death | NOT RUN |
-| Floors/walls/slopes | Green/red preview matches placement, grid calibration comfortable; invalid intersections, enemies/moving props/player rejected | NOT RUN |
+| Floors/walls/slopes | Green/red preview/reason matches placement, grid calibration comfortable, non-grid walls and all six adjacent faces; invalid intersections, enemies/moving props/player rejected | NOT RUN |
 | All eight block types | Recognizable generated textures; blocks stationary; glass transparency; physical collisions and adjacency | NOT RUN |
 | Mining | Hold progress, release/target/selection resets, material times differ, axe wood bonus, collider gone immediately | NOT RUN |
 | Bedrock | Cannot mine/blast; player collision; physics-layer matrix checked | NOT RUN |
@@ -30,7 +34,7 @@ Record Steam build ID, Unity version, BepInEx/Harmony version, other mods and te
 | Wall attack | Enemy behind wall, edge of spherecast, multiple limb colliders, point-blank overlap; no through-wall/double damage | NOT RUN |
 | TNT | R fuse, visible flash/explosion, falloff/player/enemy damage, line-of-sight, chain delay, max four explosions/frame and 16 effects, bedrock survives | NOT RUN |
 | Palette/hotbar | 1–9/wheel/item icons sync; E then 1–8 selects all blocks incl. bedrock; V1 selection unaffected | NOT RUN |
-| Pause/terminal/menu | No placement/mining/attack/switch when paused or cursor unlocked; fire rebinding respected | NOT RUN |
+| Pause/terminal/menu | No placement/mining/attack/switch when paused or cursor unlocked; fire rebinding respected; held build needs a fresh press after mode/menu/selection changes; no catch-up placement bursts | NOT RUN |
 | Layout persistence | Opt-in save/reload same scene/grid, scene unload autosave, no cross-level leak, no duplicate cells; TNT unprimed on reload | NOT RUN |
 | Bad save | >4MiB, too many cells, wrong schema/grid, NaN origin, extreme ints, unknown IDs, duplicate/occupied cells rejected | NOT RUN |
 | Performance/conflicts | Cap load, GC/physics costs, other mods; no per-frame log flood or growing resource/effect count | NOT RUN |

@@ -6,9 +6,9 @@ namespace MinecraftUltrakill
     public sealed class Settings
     {
         public readonly ConfigEntry<KeyCode> SwitchKey, PaletteKey, IgniteKey, ViewKey;
-        public readonly ConfigEntry<float> Reach, Grid, MineSpeed, SwordDamage, SwordCooldown, AxeDamage, AxeCooldown, AxeMining, SteveSpeed, MeleeRange, Fuse, BlastRadius, BlastDamage;
-        public readonly ConfigEntry<int> MaxBlocks;
-        public readonly ConfigEntry<bool> Persistence, Debug;
+        public readonly ConfigEntry<float> Reach, Grid, MineSpeed, SwordDamage, SwordCooldown, AxeDamage, AxeCooldown, AxeMining, SteveSpeed, MeleeRange, PlacementInterval, Fuse, BlastRadius, BlastDamage;
+        public readonly ConfigEntry<int> MaxBlocks, CollisionLayer;
+        public readonly ConfigEntry<bool> Persistence, Debug, HoldToPlace;
         public Settings(ConfigFile c)
         {
             SwitchKey = c.Bind("Controls", "SwitchCharacter", KeyCode.F, "Switch V1/Steve. Remap vanilla F punch to avoid a shared key.");
@@ -17,7 +17,10 @@ namespace MinecraftUltrakill
             ViewKey = c.Bind("Controls", "ThirdPersonView", KeyCode.F5, "Toggle Steve third-person shoulder view using the existing game camera.");
             Reach = Number(c, "Building", "PlacementDistance", 6f, 1f, 20f, "Maximum surface targeting distance.");
             Grid = Number(c, "Building", "GridSize", 1f, .25f, 4f, "Unity units per cube. Change only between levels; saves are keyed by grid size.");
+            HoldToPlace = c.Bind("Building", "HoldToPlace", true, "Hold secondary fire to place repeatedly after a fresh press; collision, reach and block cap still apply.");
+            PlacementInterval = Number(c, "Building", "PlacementInterval", .2f, .1f, 2f, "Minimum seconds between placements; never catch up with a burst on a slow frame.");
             MineSpeed = Number(c, "Building", "MiningSpeed", 1f, .1f, 20f, "Global mining multiplier.");
+            CollisionLayer = c.Bind("Building", "BlockCollisionLayer", -1, new ConfigDescription("-1: use the real floor collider layer, then Environment/Default. 0-31: explicit Unity layer; do not use a layer that ignores the player.", new AcceptableValueRange<int>(-1, 31)));
             MaxBlocks = c.Bind("Building", "MaxBlocks", 2048, new ConfigDescription("Per-level cap including loaded blocks.", new AcceptableValueRange<int>(1, 10000)));
             SwordDamage = Number(c, "Combat", "SwordDamage", 2f, .01f, 100f, "ULTRAKILL damage units, not hearts.");
             SwordCooldown = Number(c, "Combat", "SwordCooldown", .45f, .1f, 5f, "Seconds per swing.");

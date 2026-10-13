@@ -8,7 +8,7 @@ An unofficial **C# BepInEx gameplay mod**, not a standalone game, texture pack o
 
 - F switches between V1 and a separate procedural Steve body/viewmodel, retaining the existing player, Rigidbody and camera. Switching snapshots native weapon/arm visibility, controller enabled state, weapon HUD icons, movement speed and ability flags. Rollback restores these on failure, death and cleanup; no enemy or level reset.
 - Original cubic Steve head, torso, articulated arms/legs, turquoise shirt, blue trousers, face and hair; procedural walking, mining and sword/axe swings. F5 toggles a collision-aware shoulder view using the **same camera**, showing the world body and held tool.
-- Eight pixel-textured blocks: grass, dirt, stone, cobblestone, oak planks, glass, TNT and bedrock. Scene objects have static `BoxCollider`s, consistent grid positions, surface targeting, valid/invalid preview, occupied-space checks, and a configurable count limit.
+- Eight pixel-textured blocks: grass, dirt, stone, cobblestone, oak planks, glass, TNT and bedrock. Scene objects have static `BoxCollider`s, consistent grid positions, surface targeting, valid/invalid preview with on-screen reasons, outward snapping on non-grid-aligned surfaces, exact six-face adjacency on existing blocks, occupied-space checks, and a configurable count limit. Blocks default to the actual floor collider layer rather than assuming the game collision matrix.
 - Held primary input mines blocks with progress, per-material hardness and axe wood bonus. Bedrock cannot be mined or destroyed by mod TNT.
 - Nine-slot creative hotbar, icons, number keys and scrolling; E opens the palette to put **any of the eight blocks** into a building slot. Unlimited blocks, not a survival crafting/inventory economy.
 - Diamond sword and axe: first/world-view voxel models, timed swings, independent cooldown/damage values, real `EnemyIdentifier.DeliverDamage`, limb identifier resolution, per-swing deduplication and wall occlusion. Hit marker plus the game's native damage effects.
@@ -42,7 +42,7 @@ Uninstall with the game closed: remove `BepInEx/plugins/MinecraftUltrakill`. Opt
 | 1–9 / wheel | Hotbar selection (seven building slots, sword, axe) |
 | E, then 1–8 | Block palette; assign grass/dirt/stone/cobble/oak/glass/TNT/bedrock |
 | Primary fire / left mouse | Mine targeted mod block; otherwise swing selected sword/axe |
-| Secondary fire / right mouse | Place selected building block |
+| Secondary fire / right mouse | Place selected building block; hold to repeat at a bounded rate |
 | R | Ignite targeted TNT |
 | F5 | Steve first-person / third-person shoulder view |
 
@@ -84,7 +84,7 @@ Never commit these reference assemblies. CI uses pinned public BepInEx.Core 5.4.
 
 ## GitHub Actions downloads
 
-Workflow: [`.github/workflows/build.yml`](.github/workflows/build.yml), **Build mod**. It runs on pushes, PRs or manual dispatch. After the changes are pushed to GitHub, open **Actions → Build mod → successful run → Artifacts → MinecraftUltrakill-0.1.0**. Unzip the artifact wrapper, then extract the contained mod ZIP into ULTRAKILL. The SHA256 file verifies the mod ZIP. Workflow artifacts are not GitHub releases. No workflow run is claimed for unpushed local changes.
+Workflow: [`.github/workflows/build.yml`](.github/workflows/build.yml), **Build mod**. It runs on pushes, PRs or manual dispatch. After the changes are pushed to GitHub, open **Actions → Build mod → successful run → Artifacts → MinecraftUltrakill-0.1.0**. Unzip the artifact wrapper, then extract the contained mod ZIP into ULTRAKILL. The SHA256 file verifies the mod ZIP. Workflow artifacts are not GitHub releases. The code is now pushed to the session branch. [Pull request #1](https://github.com/benluvzbacon/Minecraft-inside-ultrakill/pull/1) contains the changes; the default `main` branch remains unchanged until that PR is merged. The first [SDK 8 build run](https://github.com/benluvzbacon/Minecraft-inside-ultrakill/actions/runs/38382306911) passed and published the artifact. For newer building changes, download the artifact from the latest successful run on `arena/f80938d1-minecraft-inside-ultrakill`.
 
 ## Compatibility / remaining work
 

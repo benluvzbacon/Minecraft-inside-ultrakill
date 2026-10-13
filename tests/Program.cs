@@ -41,6 +41,71 @@ public static class Program
         bar.Assign(BlockKind.Dirt); bar.Select(0); Check(bar.Block == BlockKind.Bedrock, "weapon cannot overwrite block slot");
         bar.Select(8); Check(bar.Item == ItemKind.Axe, "axe slot");
         bar.Scroll(1); Check(bar.Selected == 0, "hotbar scroll wraps");
+        PlacementPolicies();
+        RepeatPolicies();
         Console.WriteLine("PASS: " + assertions + " policy assertions. No Unity/gameplay tests were run.");
+        if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true")
+            Console.WriteLine("::notice title=Policy test results::" + assertions + " policy assertions passed. No Unity or in-game tests were run.");
     }
+    static void PlacementPolicies()
+    {
+        var cell = new Cell(-3, 7, 2);
+        Check(GridPlacement.Adjacent(cell, 1, 0, 0).Equals(new Cell(-2, 7, 2)), "east adjacent");
+        Check(GridPlacement.Adjacent(cell, -1, 0, 0).Equals(new Cell(-4, 7, 2)), "west adjacent");
+        Check(GridPlacement.Adjacent(cell, 0, 1, 0).Equals(new Cell(-3, 8, 2)), "top adjacent");
+        Check(GridPlacement.Adjacent(cell, 0, -1, 0).Equals(new Cell(-3, 6, 2)), "bottom adjacent");
+        Check(GridPlacement.Adjacent(cell, 0, 0, 1).Equals(new Cell(-3, 7, 3)), "front adjacent");
+        Check(GridPlacement.Adjacent(cell, 0, 0, -1).Equals(new Cell(-3, 7, 1)), "back adjacent");
+        Check(GridPlacement.Adjacent(cell, 1, 1, 0).Equals(new Cell(-3, 8, 2)), "slope tie chooses vertical");
+        Check(GridPlacement.Surface(.3f, .2f, .3f, 0, 1, 0, 0, .2f, 0, 1).Equals(new Cell(0, 0, 0)), "calibrated floor");
+        Check(GridPlacement.Surface(.3f, 2.45f, .3f, 0, 1, 0, 0, 0, 0, 1).Equals(new Cell(0, 3, 0)), "non-grid floor snaps outward");
+        Check(GridPlacement.Surface(-.2f, .3f, .3f, -1, 0, 0, 0, 0, 0, 1).Equals(new Cell(-2, 0, 0)), "negative wall snaps outward");
+        Check(GridPlacement.Surface(.000001f, .3f, .3f, 1, 0, 0, 0, 0, 0, 1).X == 0, "float noise at positive boundary");
+        Check(GridPlacement.Surface(-.000001f, .3f, .3f, -1, 0, 0, 0, 0, 0, 1).X == -1, "float noise at negative boundary");
+        bool rejected = false;
+        try { GridPlacement.Adjacent(cell, 0, 0, 0); } catch (ArgumentOutOfRangeException) { rejected = true; }
+        Check(rejected, "zero normal rejected");
+        rejected = false;
+        try { GridPlacement.Adjacent(cell, float.NaN, 1, 0); } catch (ArgumentOutOfRangeException) { rejected = true; }
+        Check(rejected, "NaN normal rejected");
+        rejected = false;
+        try { GridPlacement.Surface(1, 1, 1, 0, 1, 0, 0, float.NaN, 0, 1); } catch (ArgumentOutOfRangeException) { rejected = true; }
+        Check(rejected, "NaN origin rejected");
+        foreach (float size in new[] { .25f, .5f, 1f, 2f, 4f })
+        foreach (float position in new[] { -2.75f, -2f, -.2f, 0, .15f, 1f, 3.9999f })
+        for (int axis = 0; axis < 3; axis++)
+        foreach (float sign in new[] { -1f, 1f })
+        {
+            float origin = size * .17f;
+            var result = GridPlacement.Surface(position, position, position,
+                axis == 0 ? sign : 0, axis == 1 ? sign : 0, axis == 2 ? sign : 0,
+                origin, origin, origin, size);
+            int index = axis == 0 ? result.X : axis == 1 ? result.Y : result.Z;
+            float edge = origin + (index + (sign < 0 ? 1 : 0)) * size;
+            float gap = (edge - position) * sign;
+            Check(gap >= -size * .0002f && gap <= size * 1.0002f, "outward plane at every axis/scale/sign");
+        }
+        foreach (PlacementFailure failure in Enum.GetValues(typeof(PlacementFailure)))
+            Check(!string.IsNullOrWhiteSpace(GridPlacement.Explain(failure)), "placement reason " + failure);
+    }
+    static void RepeatPolicies()
+    {
+        var repeat = new ActionRepeater();
+        Check(!repeat.Take(0, false, true, .2f), "held before entering does not build");
+        Check(repeat.Take(0, true, true, .2f), "fresh press builds");
+        Check(!repeat.Take(.1f, false, true, .2f), "cooldown prevents repeat");
+        Check(repeat.Take(.2f, false, true, .2f), "held repeat at interval");
+        Check(!repeat.Take(.2f, false, true, .2f), "no duplicate action same frame");
+        Check(repeat.Take(5, false, true, .2f), "long frame yields one action");
+        Check(!repeat.Take(5, false, true, .2f), "no burst catch-up");
+        Check(!repeat.Take(6, false, false, .2f), "release disarms");
+        Check(!repeat.Take(7, false, true, .2f), "fresh press required after release");
+        repeat.Reset();
+        Check(!repeat.Take(8, false, true, .2f), "reset requires fresh press");
+        Check(repeat.Take(8, true, true, .2f), "fresh press after reset");
+        bool rejected = false;
+        try { repeat.Take(8, true, true, 0); } catch (ArgumentOutOfRangeException) { rejected = true; }
+        Check(rejected, "zero interval rejected");
+    }
+
 }
